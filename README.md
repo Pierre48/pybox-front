@@ -1,2 +1,0 @@
-# pybox-front
-pybox-front
