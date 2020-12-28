@@ -70,6 +70,7 @@
           "configurations": {
             "production": {
               "browserTarget": "pybox-front:build:production",
+              "proxyConfig": "src/proxy.conf.json"
             }
           }
         },

@@ -1,12 +1,35 @@
 <!-- nav -->
 <nav class="navbar navbar-expand navbar-dark bg-dark" *ngIf="user">
-  <div class="navbar-nav">
+  <a class="navbar-brand" href="#">PyBox</a>
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item active">
       <a class="nav-item nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-item nav-link" routerLink="/users" routerLinkActive="active">Users</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-item nav-link" routerLink="/sites" routerLinkActive="active">Sites</a>
+    </li>
+    <li class="nav-item">
       <a class="nav-item nav-link" (click)="logout()">Logout</a>
-  </div>
+    </li>
+  </ul>
+  <ul class="navbar-nav mr-aut float-right">
+  <li class="nav-item info dropdown">
+    <a class="nav-link outline-info dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{user.firstName}} {{user.lastName}}
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <a class="dropdown-item" href="#">Action</a>
+      <a class="dropdown-item" href="#">Another action</a>x
+    </div>
+  </li>
+</ul>
+ <!--<button class="btn btn-outline-info my-2 my-sm-0" type="submit"></button>-->
+
 </nav>
+
 
 <!-- main app container -->
 <div class="app-container" [ngClass]="{ 'bg-light': user }">
