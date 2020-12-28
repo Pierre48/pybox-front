@@ -13,23 +13,25 @@ import { AlertComponent } from './components';
 import { HomeComponent } from './components';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { SitesComponent } from './components/sites/sites.component';
+import { SitesModule } from './components/sites/sites.module';
 
 @NgModule({
-  declarations: [AppComponent, AlertComponent, HomeComponent, SitesComponent],
+  declarations: [AppComponent, AlertComponent, HomeComponent],
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    SitesModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
 
     // provider used to create fake backend
-    fakeBackendProvider,
+    //fakeBackendProvider,
+
   ],
   bootstrap: [AppComponent],
 })

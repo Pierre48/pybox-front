@@ -5,6 +5,7 @@ import { delay, mergeMap, materialize, dematerialize } from 'rxjs/operators';
 
 // array in local storage for registered users
 let users = JSON.parse(localStorage.getItem('users')) || [];
+let sites = JSON.parse(localStorage.getItem('sites')) || [];
 
 @Injectable()
 export class FakeBackendInterceptor implements HttpInterceptor {
@@ -32,6 +33,16 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                     return updateUser();
                 case url.match(/\/users\/\d+$/) && method === 'DELETE':
                     return deleteUser();
+                case url.endsWith('/sites') && method === 'GET':
+                    return getSites();
+                case url.match(/\/sites\/\d+$/) && method === 'GET':
+                    return getSiteById();
+                case url.match(/\/sites\/\d+$/) && method === 'PUT':
+                    return updateSite();
+                case url.match(/\/sites\/\d+$/) && method === 'DELETE':
+                    return deleteSite();
+                case url.endsWith('/sites') && method === 'POST':
+                  return addSite();
                 default:
                     // pass through any requests not handled above
                     return next.handle(request);
@@ -51,7 +62,33 @@ export class FakeBackendInterceptor implements HttpInterceptor {
                 lastName: user.lastName,
                 token: 'fake-jwt-token'
             })
-        }
+              }
+
+
+        function addSite() {
+            const site = body
+
+            if (sites.find(x => x.name === site.name)) {
+                return error('name "' + site.name + '" is already taken')
+            }
+
+            site.id = sites.length ? Math.max(...sites.map(x => x.id)) + 1 : 1;
+            sites.push(site);
+            localStorage.setItem('sites', JSON.stringify(sites));
+            return ok();
+
+        function register() {
+            const user = body
+
+            if (users.find(x => x.username === user.username)) {
+                return error('Username "' + user.username + '" is already taken')
+            }
+
+            user.id = users.length ? Math.max(...users.map(x => x.id)) + 1 : 1;
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            return ok();
+        }  }
 
         function register() {
             const user = body
@@ -103,6 +140,46 @@ export class FakeBackendInterceptor implements HttpInterceptor {
             localStorage.setItem('users', JSON.stringify(users));
             return ok();
         }
+
+
+        function getSites() {
+          if (!isLoggedIn()) return unauthorized();
+          return ok(sites);
+      }
+
+        function getSiteById() {
+          if (!isLoggedIn()) return unauthorized();
+
+          const site = sites.find(x => x.id === idFromUrl());
+          return ok(site);
+      }
+
+      function updateSite() {
+          if (!isLoggedIn()) return unauthorized();
+
+          let params = body;
+          let site = users.find(x => x.id === idFromUrl());
+
+          // only update password if entered
+          if (!params.password) {
+              delete params.password;
+          }
+
+          // update and save user
+          Object.assign(site, params);
+          localStorage.setItem('sites', JSON.stringify(users));
+
+          return ok();
+      }
+
+      function deleteSite() {
+          if (!isLoggedIn()) return unauthorized();
+
+          sites = users.filter(x => x.id !== idFromUrl());
+          localStorage.setItem('sites', JSON.stringify(users));
+          return ok();
+      }
+
 
         // helper functions
 

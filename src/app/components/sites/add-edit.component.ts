@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
-import { AccountService, AlertService } from '@app/services';
+import { AccountService, AlertService, SiteService } from '@app/services';
 
 @Component({ templateUrl: 'add-edit.component.html' })
 export class AddEditComponent implements OnInit {
@@ -17,7 +17,7 @@ export class AddEditComponent implements OnInit {
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private router: Router,
-        private accountService: AccountService,
+        private siteService: SiteService,
         private alertService: AlertService
     ) {}
 
@@ -32,21 +32,14 @@ export class AddEditComponent implements OnInit {
         }
 
         this.form = this.formBuilder.group({
-            firstName: ['', Validators.required],
-            lastName: ['', Validators.required],
-            username: ['', Validators.required],
-            password: ['', passwordValidators],
-            email: ['', Validators.required]
+            name: ['', Validators.required]
         });
 
         if (!this.isAddMode) {
-            this.accountService.getById(this.id)
+            this.siteService.getById(this.id)
                 .pipe(first())
                 .subscribe(x => {
-                    this.f.firstName.setValue(x.firstName);
-                    this.f.lastName.setValue(x.lastName);
-                    this.f.username.setValue(x.username);
-                    this.f.email.setValue(x.email);
+                    this.f.name.setValue(x.name);
                 });
         }
     }
@@ -67,18 +60,18 @@ export class AddEditComponent implements OnInit {
 
         this.loading = true;
         if (this.isAddMode) {
-            this.createUser();
+            this.createSite();
         } else {
-            this.updateUser();
+            this.updateSite();
         }
     }
 
-    private createUser() {
-        this.accountService.register(this.form.value)
+    private createSite() {
+        this.siteService.add(this.form.value)
             .pipe(first())
             .subscribe(
                 data => {
-                    this.alertService.success('User added successfully', { keepAfterRouteChange: true });
+                    this.alertService.success('Site added successfully', { keepAfterRouteChange: true });
                     this.router.navigate(['.', { relativeTo: this.route }]);
                 },
                 error => {
@@ -87,8 +80,8 @@ export class AddEditComponent implements OnInit {
                 });
     }
 
-    private updateUser() {
-        this.accountService.update(this.id, this.form.value)
+    private updateSite() {
+        this.siteService.update(this.id, this.form.value)
             .pipe(first())
             .subscribe(
                 data => {

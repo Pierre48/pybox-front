@@ -11,3 +11,9 @@ a { cursor: pointer; }
     text-align: center;
     box-sizing: content-box;
 }
+
+.btn-delete-site {
+  width: 40px;
+  text-align: center;
+  box-sizing: content-box;
+}
