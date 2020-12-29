@@ -20,10 +20,6 @@ export class SiteService {
         this.site = this.siteSubject.asObservable();
     }
 
-    public get siteValue(): Site {
-        return this.siteSubject.value;
-    }
-
     add(site: Site) {
         return this.http.post(`/api/sites`, site);
     }
@@ -38,16 +34,9 @@ export class SiteService {
 
     update(id, params) {
         return this.http.put(`/api/sites/${id}`, params)
-            .pipe(map(x => {
-                if (id == this.siteValue.id) {
-                    // update local storage
-                    const site = { ...this.siteValue, ...params };
-                    localStorage.setItem('site', JSON.stringify(site));
-
-                    this.siteSubject.next(site);
-                }
-                return x;
-            }));
+          .pipe(map(x => {
+              return x;
+          }));
     }
 
     delete(id: string) {

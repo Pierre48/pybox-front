@@ -1,0 +1,27 @@
+<h1>Subscriptions</h1>
+<a routerLink="add" class="btn btn-sm btn-success mb-2">Add Subscription</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width: 90%">Name</th>
+            <th style="width: 10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let site of sites">
+            <td>{{site.name}}</td>
+            <td style="white-space: nowrap">
+                <a routerLink="edit/{{site.id}}" class="btn btn-sm btn-primary mr-1">Edit</a>
+                <button (click)="deleteSubscription(site.id)" class="btn btn-sm btn-danger btn-delete-site" [disabled]="site.isDeleting">
+                    <span *ngIf="site.isDeleting" class="spinner-border spinner-border-sm"></span>
+                    <span *ngIf="!site.isDeleting">Delete</span>
+                </button>
+            </td>
+        </tr>
+        <tr *ngIf="!sites">
+            <td colspan="4" class="text-center">
+                <span class="spinner-border spinner-border-lg align-center"></span>
+            </td>
+        </tr>
+    </tbody>
+</table>
